@@ -1,0 +1,8 @@
+fastapi
+aiohttp
+jinja2
+uvicorn
+better-ipc
+ezcord
+aiosqlite
+py-cord-dev==2.5.0rc5
