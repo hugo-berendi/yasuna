@@ -14,50 +14,26 @@
             <a href="/about" class="link">About</a>
         </div>
     </nav>
-    <p> Hey <strong>{{ user["username"] }}</strong>, bitte wähle einen Server aus. </p>
+    <p> Hey <strong>{{ global_name }}</strong>, bitte wähle einen Server aus. </p>
 
     <div class="container">
-        {% for guild in user_guilds %}
-            {% if guild['id'] in guilds_ids %}
+        {% for guild in guilds_with_bot %}
+            <a href={{guild.url}} class="link">
                 <div class="item">
-                    {% if guild["icon"] is none %}
-                        <img class="title" src="https://cdn.discordapp.com/embed/avatars/0.png">
-                    {% else %}
-                        <img class="title" src="{{ guild['icon'] }}">
-                    {% endif %}
-                    {% if len(guild.name) > 18 %}
-                        <p class="title"> <b>{{ guild.name[:18] + " … " }}</b> </p>
-                    {% else %}
-                        <p class="title"> <b>{{ guild.name }}</b> </p>
-                    {% endif %}
+                    <img class="title" src="{{guild.icon}}">
+                    <p class="title"> <b>{{ guild.name }}</b> </p>
                 </div>
-            {% else %}
-                <a href="https://discord.com/oauth2/authorize?client_id=1156661228047958107&permissions=8&scope=bot%20applications.commands&guild_id={{ guild.id }}">
-                    <div class="item">
-                        {% if guild["icon"] is none %}
-                            <img class="title" src="https://cdn.discordapp.com/embed/avatars/0.png">
-                        {% else %}
-                            <img class="title" src="https://cdn.discordapp.com/icons/{{ guild['id'] }}/{{ guild['icon'] }}.webp">
-                        {% endif %}
-                        {% if len(guild.name) > 18 %}
-                            <p class="title"> <b>{{ guild.name[:18] + " … " }}</b> </p>
-                        {% else %}
-                            <p class="title"> <b>{{ guild.name }}</b> </p>
-                        {% endif %}
-                    </div>
-                </a>
-            {% endif %}
+            </a>
+        {% endfor %}
+        {% for guild in guilds_with_bot %}
+            <a href="https://discord.com/api/oauth2/authorize?client_id=1156661228047958107&permissions=8&scope=bot%20applications.commands&guild_id={{ guild['id'] }}" class="link">
+                <div class="item without_bot">
+                    <img class="title" src="{{guild.icon}}">
+                    <p class="title"> <b>{{ guild.name }}</b> </p>
+                </div>
+            </a>
         {% endfor %}
     </div>
-
-    <select name="user_guilds" id="user_guilds">
-        {% for guild in user_guilds %}
-            {% if guild in guilds %}
-            {% else %}
-                <option><a href="https://discord.com/oauth2/authorize?client_id=1156661228047958107&permissions=8&scope=bot%20applications.commands&guild_id={{ guild.id }}">{{ guild.name }}</a></option>
-            {% endif %}
-        {% endfor %}
-    </select>
 
 </body>
 </html>

@@ -6,3 +6,4 @@ better-ipc
 ezcord
 aiosqlite
 py-cord-dev==2.5.0rc5
+AnilistPython==0.1.3

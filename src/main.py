@@ -25,25 +25,13 @@ class Bot(ezcord.Bot):
         return str(len(self.guilds))
     
     @Server.route()
-    async def get_guild_data(self, data: ClientPayload):
-        guild_id: int = int(data.guild_id)
-        for guild in self.guilds:
-            if int(guild_id) == int(guild.id):
-                guild: discord.Guild = self.get_guild(guild_id)
-                print(str(guild.owner.id))
-                return {
-                    'name': guild.name,
-                    'id': guild.id,
-                    'description': guild.description,
-                    'members': [member.id for member in guild.members],
-                    'owner_id': str(guild.owner_id),
-                    'icon': guild.icon.url,
-                    'roles': [role.id for role in guild.roles],
-                    'created_at': str(guild.created_at)
-                }
-                
-            else:
-                return None
+    async def guild_stats(self, data: ClientPayload):
+        guild = self.get_guild(data.guild_id)
+        if not guild: return None
+        return {
+            "member_count": guild.member_count,
+            "name": guild.name,
+        }
 
     @Server.route()
     async def on_ipc_error(self, endpoint: str, exc: Exception):

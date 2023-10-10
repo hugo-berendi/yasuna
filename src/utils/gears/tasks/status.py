@@ -29,9 +29,9 @@ class Status(commands.Cog):
 
         # create activity list for bot activity
         activity_list = [
-            discord.CustomActivity("Developed by @hugo.berendi"),
-            discord.CustomActivity(f"Is in {len(self.bot.guilds)} servers"),
-            discord.CustomActivity(f"Chills with {members} users")
+            discord.Game("by @hugo.berendi"),
+            discord.Game(f"with {len(self.bot.guilds)} servers"),
+            discord.Game(f"with {members} users")
         ]
 
         # set bot presence with status and activity

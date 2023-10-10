@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yasuna Dashboard | {{ stats.name }}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+<body>
+    <nav>
+        <a class="logo" href="/"><h1>Yasuna Dashboard</h1></a>
+        <div class="links">
+            <a href="/" class="link active-link">Home</a>
+            <a href="/about" class="link">About</a>
+        </div>
+        <a href={{login_url}} class="button">Login</a>
+    </nav>
+    <h1> {{ stats.name }} </h1>
+    <a href="/guilds">
+        <button> Zurück </button>
+    </a>
+
+    <h2> ID: {{ id }} </h2>
+    <h2> Member: {{ stats.member_count }} </h2>
+</body>
+</html>

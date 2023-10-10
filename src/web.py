@@ -86,28 +86,60 @@ async def guilds(request: Request):
     user = await api.get_user(token)
     user_guilds: list[dict] = await api.get_guilds(token)
     
-    print(user)
-    
-    async def get_guild_data(guild_id):
-        resp = await ipc.request("get_guild_data", guild_id=guild_id)
-        return resp.response
-    
-    is_in_guilds: list = []
+    perms = []
     
     for guild in user_guilds:
-        if await get_guild_data(guild["id"]) is not None:
-            is_in_guilds.append(await get_guild_data(guild["id"]))
+        guild["url"] = "/server/" + str(guild["id"])
 
+        if guild["icon"]:
+            guild["icon"] = "https://cdn.discordapp.com/icons/" + guild["id"] + "/" + guild["icon"]
+        else:
+            guild["icon"] = "https://cdn.discordapp.com/embed/avatars/0.png"
+
+        is_admin = discord.Permissions(int(guild["permissions"])).administrator
+        if is_admin or guild["owner"]:
+            perms.append(guild)
+            
+    perms_without_bot = []
+    perms_with_bot = []
+
+    for guild in perms:
+        stats = await ipc.request("guild_stats", guild_id=int(guild["id"]))
+        print(f"Guild {guild['id']} stats: {stats.response}")
+        if stats.response is not None and stats.response != 'None':
+            perms_with_bot.append(guild)
+            
+        if stats.response is None or stats.response == 'None':
+            perms_without_bot.append(guild)
+
+    print(perms_with_bot)
+    print(perms_without_bot)
+    print(perms)
+            
     return templates.TemplateResponse(
         "guilds.html",
         {
             "request": request,
-            "user": user,
-            "guilds": is_in_guilds,
-            "guilds_ids": [guild['id'] for guild in is_in_guilds],
-            "user_guilds": user_guilds,
-            "none": None,
-            "len": len
+            "global_name": user["global_name"],
+            "guilds_with_bot": perms_with_bot,
+            "guilds_without_bot": perms_without_bot
+        }
+    )
+    
+@app.get("/server/{guild_id}")
+async def server(request: Request, guild_id: int):
+    session_id = request.cookies.get("session_id")
+    if not session_id or not await db.get_session(session_id):
+        raise HTTPException(status_code=401, detail="no auth")
+
+    stats = await ipc.request("guild_stats", guild_id=guild_id)
+
+    return templates.TemplateResponse(
+        "server.html",
+        {
+            "request": request,
+            "stats": stats.response,
+            "id": guild_id,
         }
     )
 
